@@ -1,6 +1,6 @@
 import torch
 from datasets import load_dataset
-from peft import LoraConfig, get_peft_model, prepare_model_for_int8_training
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments, Trainer
 from trl import SFTTrainer
 
@@ -16,7 +16,7 @@ def train(epochs, lr, batch_size, log_step, warmup_ratio, scheduler_type, fp16):
         device_map = "auto"
     )
 
-    model = prepare_model_for_int8_training(model)
+    model = prepare_model_for_kbit_training(model)
     peft_config = LoraConfig(
         r=16,
         lora_alpha=32,
@@ -56,7 +56,7 @@ def train(epochs, lr, batch_size, log_step, warmup_ratio, scheduler_type, fp16):
 if __name__ == "__main__":
     epochs = 1
     lr = 2e-4
-    batch_size=4
+    batch_size=8
     log_step=100
     warmup_ratio=0.1
     scheduler_type="linear"
